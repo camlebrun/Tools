@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> 
+    <title>Calculatrice de jours et de différence de dates</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Lien vers le fichier CSS externe -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Calculatrice de jours et de différence de dates</h1>
+
+        <!-- Menu de navigation Bootstrap -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#calculatrice-de-jours">Calculatrice de jours</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#difference-de-dates">Différence de dates</a>
+            </li>
+        </ul>
+
+        <!-- Contenu des onglets -->
+        <div class="tab-content">
+            <!-- Onglet "Calculatrice de jours" -->
+            <div id="calculatrice-de-jours" class="tab-pane fade show active">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="date">Choisir votre date</label>
+                        <input type="date" id="date" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="operation">Sélectionnez l'opération</label>
+                        <select id="operation" class="form-control">
+                            <option value="Ajouter">Ajouter</option>
+                            <option value="Soustraire">Soustraire</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="days">Choisir le nombre de jours à ajouter/soustraire</label>
+                        <input type="number" id="days" class="form-control" min="0" step="1" value="7">
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="text-center" style="margin-top: 20px;">Le résultat est : <span id="result"></span></h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet "Différence de dates" -->
+            <div id="difference-de-dates" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="date1">Date 1</label>
+                        <input type="date" id="date1" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="date2">Date 2</label>
+                        <input type="date" id="date2" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary btn-block" onclick="calculateDateDifference()">Calculer la différence</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="text-center" style="margin-top: 20px;"> <span id="dateDifferenceResult"></span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fin du contenu des onglets -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.js"></script>
+    <script>
+        var dateInput = document.getElementById("date");
+        var daysInput = document.getElementById("days");
+        var operationSelect = document.getElementById("operation");
+        var resultSpan = document.getElementById("result");
+
+        var date1Input = document.getElementById("date1");
+        var date2Input = document.getElementById("date2");
+        var dateDifferenceResultSpan = document.getElementById("dateDifferenceResult");
+
+        // Définir la date actuelle comme valeur par défaut du champ de date
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var formattedDate = year + '-' + month + '-' + day;
+        dateInput.value = formattedDate;
+
+        dateInput.addEventListener("input", calculateDate);
+        daysInput.addEventListener("input", calculateDate);
+        operationSelect.addEventListener("change", calculateDate);
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var formattedDate = year + '-' + month + '-' + day;
+        dateInput.value = formattedDate;
+
+        dateInput.addEventListener("input", calculateDate);
+        daysInput.addEventListener("input", calculateDate);
+        operationSelect.addEventListener("change", calculateDate);
+
+        function calculateDate() {
+            var date = new Date(dateInput.value);
+            var days = parseInt(daysInput.value);
+            var operation = operationSelect.value;
+            
+            if (operation === "Ajouter") {
+                date.setDate(date.getDate() + days);
+            } else if (operation === "Soustraire") {
+                date.setDate(date.getDate() - days);
+            }
+            
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = date.toLocaleDateString('fr-FR', options);
+            
+            if (isNaN(date)) {
+                resultSpan.textContent = "Date invalide.";
+            } else {
+                resultSpan.textContent = formattedDate;
+            }
+        }
+
+        function calculateDateDifference() {
+            var date1 = new Date(date1Input.value);
+            var date2 = new Date(date2Input.value);
+
+            if (!isNaN(date1) && !isNaN(date2)) {
+                var timeDifference = Math.abs(date2.getTime() - date1.getTime());
+                var daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+
+                dateDifferenceResultSpan.textContent = "La différence entre les dates est de " + daysDifference + " jours.";
+            } else {
+                dateDifferenceResultSpan.textContent = "Dates invalides.";
+            }
+        }
+    </script>
+</body>
+</html>
